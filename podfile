@@ -1,0 +1,4 @@
+use_frameworks!
+target 'cupertino_store' do
+    pod 'GoogleMaps'
+end

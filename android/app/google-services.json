@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "462052883854",
+    "project_id": "tbj-store-ptoject",
+    "storage_bucket": "tbj-store-ptoject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462052883854:android:69e739a6bd40efd10538df",
+        "android_client_info": {
+          "package_name": "com.example.cupertino_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "462052883854-mo8i2hucs7r5lfkflf8cbo9eac4nlcv2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf_mbVk-alUsaM2VUq26M1K_yua7lOYRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "462052883854-mo8i2hucs7r5lfkflf8cbo9eac4nlcv2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
