@@ -1,4 +1,4 @@
-import 'package:mailer/mailer.dart';
+/*import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 
 Future<void> sendEmail(String name, String email, String message) async {
@@ -21,4 +21,4 @@ Future<void> sendEmail(String name, String email, String message) async {
 //String name = "Tona Brenda";
 //String email = 'tonabrenda98@gmail.com';
 //String message = 'Hello, this is my message.';
-//await sendEmail(name,email,message);
+//await sendEmail(name,email,message);*/

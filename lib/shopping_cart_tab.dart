@@ -4,15 +4,22 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:js_util';
 import 'model/app_state_model.dart';
 import 'model/product.dart';
 import 'styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:uuid/uuid.dart';
+
+/*var uuid = Uuid().v4();
+CollectionReference ref = FirebaseFirestore.instance.collection('Orders');
+const double _kDateTimePickerHeight = 216;
+final now = DateTime.now();
+
+FirebaseFirestore firestore = FirebaseFirestore.instance;*/
 
 const double _kDateTimePickerHeight = 216;
-
-FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 class ShoppingCartTab extends StatefulWidget {
   const ShoppingCartTab({super.key});
@@ -31,21 +38,35 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
 
   DateTime dateTime = DateTime.now();
   final _currencyFormat = NumberFormat.currency(symbol: '\$');
-  // TextEditingController controller1 = TextEditingController();
-  //TextEditingController controller = TextEditingController();
-  // TextEditingController controller2 = TextEditingController();
+  final _controller1 = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
+  /*late DatabaseReference _messagesRef;
+  @override
+  void initState() {
+    super.initState();
+    _messagesRef = FirebaseDatabase.instance.reference().child('Orders');
+  }
+
+  void _handleSubmitted(String name, String email, String location) {
+    _controller.clear();
+    _controller1.clear();
+    _controller2.clear();
+    _messagesRef
+        .push()
+        .set({'name': name, 'email': email, 'Location': location});
+  }*/
   //TextEditingController controller3 = TextEditingController();
 
-  Widget _buildNameField() {
-    return CupertinoTextField(
+  /* Widget _buildNameField() {
+    return CupertinoTextFormFieldRow(
       prefix: const Icon(
         CupertinoIcons.person_solid,
         color: CupertinoColors.lightBackgroundGray,
         size: 28,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-      // controller: controller1,
-      clearButtonMode: OverlayVisibilityMode.editing,
+      controller: _controller,
       textCapitalization: TextCapitalization.words,
       autocorrect: false,
       decoration: const BoxDecoration(
@@ -66,14 +87,14 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   }
 
   Widget _buildEmailField() {
-    return const CupertinoTextField(
+    return CupertinoTextFormFieldRow(
       prefix: Icon(
         CupertinoIcons.mail_solid,
         color: CupertinoColors.lightBackgroundGray,
         size: 28,
       ),
       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-      clearButtonMode: OverlayVisibilityMode.editing,
+      controller: _controller1,
       keyboardType: TextInputType.emailAddress,
       autocorrect: false,
       decoration: BoxDecoration(
@@ -89,14 +110,14 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   }
 
   Widget _buildLocationField() {
-    return const CupertinoTextField(
+    return CupertinoTextFormFieldRow(
       prefix: Icon(
         CupertinoIcons.location_solid,
         color: CupertinoColors.lightBackgroundGray,
         size: 28,
       ),
       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-      clearButtonMode: OverlayVisibilityMode.editing,
+      controller: _controller2,
       textCapitalization: TextCapitalization.words,
       decoration: BoxDecoration(
         border: Border(
@@ -107,6 +128,76 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
         ),
       ),
       placeholder: 'Location',
+    );
+  }*/
+  Widget _buildForm() {
+    return Column(
+      children: <Widget>[
+        Container(
+          child: CupertinoTextFormFieldRow(
+            prefix: Icon(
+              CupertinoIcons.person_solid,
+              color: CupertinoColors.lightBackgroundGray,
+              size: 28,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+            controller: _controller,
+            //   onFieldSubmitted: _handleSubmitted,
+            textCapitalization: TextCapitalization.words,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 0,
+                  color: CupertinoColors.inactiveGray,
+                ),
+              ),
+            ),
+            placeholder: 'Name',
+          ),
+        ),
+        SizedBox(),
+        Container(
+          child: CupertinoTextFormFieldRow(
+            prefix: Icon(
+              CupertinoIcons.mail_solid,
+              color: CupertinoColors.lightBackgroundGray,
+              size: 28,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+            controller: _controller1,
+            // onFieldSubmitted: _handleSubmitted,
+            textCapitalization: TextCapitalization.words,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom:
+                    BorderSide(width: 0, color: CupertinoColors.inactiveGray),
+              ),
+            ),
+            placeholder: 'Email',
+          ),
+        ),
+        SizedBox(),
+        Container(
+          child: CupertinoTextFormFieldRow(
+            prefix: Icon(
+              CupertinoIcons.location_solid,
+              color: CupertinoColors.lightBackgroundGray,
+              size: 28,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+            controller: _controller2,
+            // onFieldSubmitted: _handleSubmitted,
+            textCapitalization: TextCapitalization.words,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom:
+                    BorderSide(width: 0, color: CupertinoColors.inactiveGray),
+              ),
+            ),
+            placeholder: 'Location',
+          ),
+        )
+      ],
     );
   }
 
@@ -156,9 +247,9 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
       AppStateModel model) {
     return SliverChildBuilderDelegate(
       (context, index) {
-        final productIndex = index - 5;
+        final productIndex = index - 3;
         switch (index) {
-          case 0:
+          /*  case 0:
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _buildNameField(),
@@ -172,16 +263,22 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _buildLocationField(),
+            );*/
+          case 0:
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: _buildForm(),
             );
-          case 3:
+
+          case 1:
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               child: _buildDateAndTimePicker(context),
             );
-          case 4:
+          case 2:
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: _buildOrderButton(),
+              child: _buildOrderButton(_controller, _controller1),
             );
           default:
             if (model.productsInCart.length > productIndex) {
@@ -253,13 +350,21 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   }
 }
 
-Widget _buildOrderButton() {
+Widget _buildOrderButton(name, email) {
   return Container(
     child: CupertinoButton(
       color: Colors.black,
       child: Text('Order'),
       onPressed: () {
-        addOrder();
+        addOrder(name.text, email.text);
+        /*Map<String, String> dataToSave = {
+          'name': _controller.text,
+          'email': _controller1.text,
+          "location": _controller2.text,
+          "Order Time": DateTime.now()
+        };
+        //FirebaseFirestore.instance.collection('Orders').add(dataToSave);*/
+        print(name.text);
       },
     ),
   );
