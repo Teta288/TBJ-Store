@@ -1,8 +1,17 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'product_list_tab.dart';
 import 'search_tab.dart';
 import 'shopping_cart_tab.dart';
+import 'package:cupertino_store/app.dart';
+
+int _counter = 0;
+void increment() {
+  setState() {
+    _counter++;
+  }
+}
 
 class CupertinoStoreApp extends StatelessWidget {
   const CupertinoStoreApp({super.key});
@@ -29,7 +38,7 @@ class CupertinoStoreHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.home),
             label: 'Products',
@@ -39,7 +48,13 @@ class CupertinoStoreHomePage extends StatelessWidget {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.shopping_cart),
+            icon: Badge(
+              badgeContent: Text(
+                _counter.toString(),
+                style: TextStyle(color: CupertinoColors.white),
+              ),
+              child: Icon(CupertinoIcons.shopping_cart),
+            ),
             label: 'Cart',
           ),
         ],

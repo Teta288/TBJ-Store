@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'model/app_state_model.dart';
 import 'model/product.dart';
 import 'styles.dart';
+import 'app.dart';
+
+
 
 class ProductRowItem extends StatelessWidget {
   const ProductRowItem({
@@ -63,6 +66,7 @@ class ProductRowItem extends StatelessWidget {
             onPressed: () {
               final model = Provider.of<AppStateModel>(context, listen: false);
               model.addProductToCart(product.id);
+              increment();
             },
             child: const Icon(
               CupertinoIcons.plus_circled,

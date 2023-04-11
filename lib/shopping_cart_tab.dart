@@ -11,6 +11,7 @@ import 'styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:firebase_database/firebase_database.dart';
 import 'package:uuid/uuid.dart';
+import 'connection/firebase.dart';
 
 /*var uuid = Uuid().v4();
 CollectionReference ref = FirebaseFirestore.instance.collection('Orders');
@@ -41,95 +42,37 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   final _controller1 = TextEditingController();
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
-  /*late DatabaseReference _messagesRef;
-  @override
-  void initState() {
-    super.initState();
-    _messagesRef = FirebaseDatabase.instance.reference().child('Orders');
+  int _selectedloc = 0;
+
+  double _kItemExtent = 32.0;
+  List<String> _location = <String>[
+    'Gasabo',
+    'Bugesera',
+    'Huye',
+    'Nyamata',
+    'Kicukiro',
+    'Nyarugenge',
+    'Nyagatare',
+    'Rwamagana',
+    'Musanze',
+  ];
+  void _showDialog(Widget child) {
+    showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) => Container(
+              height: 216,
+              padding: const EdgeInsets.only(top: 6.0),
+              margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              color: CupertinoColors.systemBackground.resolveFrom(context),
+              child: SafeArea(
+                top: false,
+                child: child,
+              ),
+            ));
   }
 
-  void _handleSubmitted(String name, String email, String location) {
-    _controller.clear();
-    _controller1.clear();
-    _controller2.clear();
-    _messagesRef
-        .push()
-        .set({'name': name, 'email': email, 'Location': location});
-  }*/
-  //TextEditingController controller3 = TextEditingController();
-
-  /* Widget _buildNameField() {
-    return CupertinoTextFormFieldRow(
-      prefix: const Icon(
-        CupertinoIcons.person_solid,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 28,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-      controller: _controller,
-      textCapitalization: TextCapitalization.words,
-      autocorrect: false,
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0,
-            color: CupertinoColors.inactiveGray,
-          ),
-        ),
-      ),
-      placeholder: 'Name',
-      onChanged: (newName) {
-        setState(() {
-          name = newName;
-        });
-      },
-    );
-  }
-
-  Widget _buildEmailField() {
-    return CupertinoTextFormFieldRow(
-      prefix: Icon(
-        CupertinoIcons.mail_solid,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 28,
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-      controller: _controller1,
-      keyboardType: TextInputType.emailAddress,
-      autocorrect: false,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0,
-            color: CupertinoColors.inactiveGray,
-          ),
-        ),
-      ),
-      placeholder: 'Email',
-    );
-  }
-
-  Widget _buildLocationField() {
-    return CupertinoTextFormFieldRow(
-      prefix: Icon(
-        CupertinoIcons.location_solid,
-        color: CupertinoColors.lightBackgroundGray,
-        size: 28,
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-      controller: _controller2,
-      textCapitalization: TextCapitalization.words,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0,
-            color: CupertinoColors.inactiveGray,
-          ),
-        ),
-      ),
-      placeholder: 'Location',
-    );
-  }*/
   Widget _buildForm() {
     return Column(
       children: <Widget>[
@@ -180,13 +123,12 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
         Container(
           child: CupertinoTextFormFieldRow(
             prefix: Icon(
-              CupertinoIcons.location_solid,
+              CupertinoIcons.phone,
               color: CupertinoColors.lightBackgroundGray,
               size: 28,
             ),
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
             controller: _controller2,
-            // onFieldSubmitted: _handleSubmitted,
             textCapitalization: TextCapitalization.words,
             decoration: BoxDecoration(
               border: Border(
@@ -194,14 +136,43 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
                     BorderSide(width: 0, color: CupertinoColors.inactiveGray),
               ),
             ),
-            placeholder: 'Location',
+            placeholder: 'Phone Number',
           ),
-        )
+        ),
+        SizedBox(),
+        Container(
+          child: CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () => _showDialog(
+              CupertinoPicker(
+                itemExtent: _kItemExtent,
+                onSelectedItemChanged: (int selectedItem) {
+                  setState(() {
+                    _selectedloc = selectedItem;
+                  });
+                },
+                children: List<Widget>.generate(_location.length, (int index) {
+                  return Center(
+                    child: Text(
+                      _location[index],
+                    ),
+                  );
+                }),
+              ),
+            ),
+            child: Text(
+              _location[_selectedloc],
+              style: const TextStyle(
+                fontSize: 22.0,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildDateAndTimePicker(BuildContext context) {
+  /* Widget _buildDateAndTimePicker(BuildContext context) {
     return Column(
       children: <Widget>[
         Row(
@@ -241,13 +212,13 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
         ),
       ],
     );
-  }
+  }*/
 
   SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
       AppStateModel model) {
     return SliverChildBuilderDelegate(
       (context, index) {
-        final productIndex = index - 3;
+        final productIndex = index - 2;
         switch (index) {
           /*  case 0:
             return Padding(
@@ -269,16 +240,10 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
               padding: const EdgeInsets.symmetric(horizontal: 48),
               child: _buildForm(),
             );
-
           case 1:
             return Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              child: _buildDateAndTimePicker(context),
-            );
-          case 2:
-            return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: _buildOrderButton(_controller, _controller1),
+              child: _buildOrderButton(_controller, _controller1, _controller2),
             );
           default:
             if (model.productsInCart.length > productIndex) {
@@ -350,13 +315,53 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   }
 }
 
-Widget _buildOrderButton(name, email) {
+/*_showDiAlog(BuildContext context){
+    showDialog(
+        context: context,
+        child:   CupertinoAlertDialog(
+          title: Column(
+            children: <Widget>[
+              Text("TBJ store"),
+            
+            ],
+          ),
+          content: new Text('Thank you for shopping'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },),
+           
+          ],
+        ));
+  }*/
+
+Widget _buildOrderButton(name, email, phoneno) {
   return Container(
     child: CupertinoButton(
       color: Colors.black,
       child: Text('Order'),
       onPressed: () {
-        addOrder(name.text, email.text);
+        addOrder(name.text, email.text, phoneno.text);
+
+        /* if (name.text.isEmpty || email.text.isEmpty || phoneno.text.isEmpty)  {
+            showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text('error'),
+                    content: Text('Phone Field is Empty'),
+                  
+                  );
+                });
+          } else {
+    
+              return _showDiAlog(context);
+            }
+            // Validation passed
+          }*/
+
         /*Map<String, String> dataToSave = {
           'name': _controller.text,
           'email': _controller1.text,
@@ -364,7 +369,7 @@ Widget _buildOrderButton(name, email) {
           "Order Time": DateTime.now()
         };
         //FirebaseFirestore.instance.collection('Orders').add(dataToSave);*/
-        print(name.text);
+        //print(name.text);
       },
     ),
   );
