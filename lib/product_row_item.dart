@@ -6,8 +6,6 @@ import 'model/product.dart';
 import 'styles.dart';
 import 'app.dart';
 
-
-
 class ProductRowItem extends StatelessWidget {
   const ProductRowItem({
     required this.product,
@@ -65,12 +63,24 @@ class ProductRowItem extends StatelessWidget {
             padding: EdgeInsets.zero,
             onPressed: () {
               final model = Provider.of<AppStateModel>(context, listen: false);
+              print(model.total);
               model.addProductToCart(product.id);
-              increment();
             },
             child: const Icon(
               CupertinoIcons.plus_circled,
               semanticLabel: 'Add',
+            ),
+          ),
+          SizedBox(),
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              final model = Provider.of<AppStateModel>(context, listen: false);
+              model.removeItemFromCart(product.id);
+            },
+            child: const Icon(
+              CupertinoIcons.minus_circle,
+              semanticLabel: 'Remove from Cart',
             ),
           ),
         ],

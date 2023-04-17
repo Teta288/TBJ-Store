@@ -1,7 +1,7 @@
 import 'package:cupertino_store/connection/firebase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'product_row_item.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:js_util';
@@ -243,7 +243,8 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
           case 1:
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: _buildOrderButton(_controller, _controller1, _controller2),
+              child: _buildOrderButton(_controller, _controller1, _controller2,
+                  context, context, _selectedloc),
             );
           default:
             if (model.productsInCart.length > productIndex) {
@@ -280,6 +281,13 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
                           'Total ${_currencyFormat.format(model.totalCost)}',
                           style: Styles.productRowTotal,
                         ),
+                        Text(
+                          'My Total ${model.total}',
+                          style: Styles.productRowTotal,
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
                       ],
                     )
                   ],
@@ -315,61 +323,50 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   }
 }
 
-/*_showDiAlog(BuildContext context){
-    showDialog(
-        context: context,
-        child:   CupertinoAlertDialog(
-          title: Column(
-            children: <Widget>[
-              Text("TBJ store"),
-            
-            ],
-          ),
-          content: new Text('Thank you for shopping'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },),
-           
-          ],
-        ));
-  }*/
-
-Widget _buildOrderButton(name, email, phoneno) {
+Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
   return Container(
     child: CupertinoButton(
       color: Colors.black,
       child: Text('Order'),
       onPressed: () {
-        addOrder(name.text, email.text, phoneno.text);
+        if (name.text.isEmpty || email.text.isEmpty || phoneno.text.isEmpty) {
+          showCupertinoDialog(
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: Text('error'),
+                  content: Text('Check if any of the Fields is Empty'),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                );
+              });
+        } else {
+          showCupertinoDialog(
+              context: context1,
+              builder: (context1) {
+                return CupertinoAlertDialog(
+                  title: Text('Congrats'),
+                  content: Text('Thank you for shopping'),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text('Return'),
+                      onPressed: () {
+                        Navigator.pop(context1);
+                      },
+                    )
+                  ],
+                );
+              });
+          addOrder(name.text, email.text, phoneno.text, Loc.toString());
+        }
 
-        /* if (name.text.isEmpty || email.text.isEmpty || phoneno.text.isEmpty)  {
-            showCupertinoDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text('error'),
-                    content: Text('Phone Field is Empty'),
-                  
-                  );
-                });
-          } else {
-    
-              return _showDiAlog(context);
-            }
-            // Validation passed
-          }*/
-
-        /*Map<String, String> dataToSave = {
-          'name': _controller.text,
-          'email': _controller1.text,
-          "location": _controller2.text,
-          "Order Time": DateTime.now()
-        };
-        //FirebaseFirestore.instance.collection('Orders').add(dataToSave);*/
-        //print(name.text);
+        // Validation passed
       },
     ),
   );

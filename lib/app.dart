@@ -5,13 +5,18 @@ import 'product_list_tab.dart';
 import 'search_tab.dart';
 import 'shopping_cart_tab.dart';
 import 'package:cupertino_store/app.dart';
+import 'model/app_state_model.dart';
+import 'product_row_item.dart';
+import 'package:provider/provider.dart';
+import 'Checkout.dart';
 
-int _counter = 0;
+/*int _counter = 0;
+@override
 void increment() {
   setState() {
     _counter++;
   }
-}
+}*/
 
 class CupertinoStoreApp extends StatelessWidget {
   const CupertinoStoreApp({super.key});
@@ -36,6 +41,9 @@ class CupertinoStoreHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = Provider.of<AppStateModel>(context, listen: false);
+    print(model.total);
+    print("$model my model");
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: <BottomNavigationBarItem>[
@@ -50,13 +58,18 @@ class CupertinoStoreHomePage extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Badge(
               badgeContent: Text(
-                _counter.toString(),
-                style: TextStyle(color: CupertinoColors.white),
+                '${model.total.toString()}',
+                style: TextStyle(
+                  color: CupertinoColors.white,
+                  fontSize: 11,
+                ),
               ),
               child: Icon(CupertinoIcons.shopping_cart),
             ),
             label: 'Cart',
           ),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.money_dollar), label: 'Pay'),
         ],
       ),
       tabBuilder: (context, index) {
@@ -83,6 +96,14 @@ class CupertinoStoreHomePage extends StatelessWidget {
               );
             });
             break;
+          case 3:
+            returnValue = CupertinoTabView(
+              builder: (context) {
+                return const CupertinoPageScaffold(
+                  child: Checkout_tab(),
+                );
+              },
+            );
         }
         return returnValue;
       },

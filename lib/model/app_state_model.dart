@@ -11,7 +11,7 @@ double _shippingCostPerItem = 7;
 class AppStateModel extends foundation.ChangeNotifier {
   // All the available products.
   List<Product> _availableProducts = [];
-
+  var total = 10;
   // The currently selected category of products.
   Category _selectedCategory = Category.all;
 
@@ -83,8 +83,13 @@ class AppStateModel extends foundation.ChangeNotifier {
   void addProductToCart(int productId) {
     if (!_productsInCart.containsKey(productId)) {
       _productsInCart[productId] = 1;
+      total += 1;
+      print("adding 1");
+      // print(total);
     } else {
       _productsInCart[productId] = _productsInCart[productId]! + 1;
+      total += 1;
+      print("adding 2");
     }
 
     notifyListeners();

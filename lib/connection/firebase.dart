@@ -8,13 +8,13 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:http/http.dart' as http;
 
-Future<void> addOrder(name, email, phoneno) async {
+Future<void> addOrder(name, email, phoneno, Loc) async {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var uuid = Uuid().v4();
   print(name);
   await _firestore.collection("orders").doc(uuid).set({
     'name': name,
-    //'Location': Loc,
+    'Location': Loc,
     'Email': email,
     'Phone Number': phoneno,
     // 'Ordered products': savedProducts,
@@ -37,7 +37,8 @@ Future<void> addOrder(name, email, phoneno) async {
           "template_params": {
             "name": name,
             "subject": 'New Order',
-            "message": 'You got a new order from $name at $time',
+            "message":
+                'You got a new order from $name at $time / My number is $phoneno, Location is $Loc',
             "user_email": email
           }
         }));
