@@ -4,9 +4,7 @@ import 'package:flutter/services.dart';
 import 'product_list_tab.dart';
 import 'search_tab.dart';
 import 'shopping_cart_tab.dart';
-import 'package:cupertino_store/app.dart';
 import 'model/app_state_model.dart';
-import 'product_row_item.dart';
 import 'package:provider/provider.dart';
 import 'Checkout.dart';
 
@@ -41,7 +39,7 @@ class CupertinoStoreHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<AppStateModel>(context, listen: false);
+    final model = Provider.of<AppStateModel>(context);
     print(model.total);
     print("$model my model");
     return CupertinoTabScaffold(

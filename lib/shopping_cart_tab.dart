@@ -1,17 +1,16 @@
 import 'package:cupertino_store/connection/firebase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'product_row_item.dart';
+import 'dart:convert';
+import 'package:flutter_stripe/flutter_stripe.dart';
+
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'dart:js_util';
 import 'model/app_state_model.dart';
 import 'model/product.dart';
 import 'styles.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:firebase_database/firebase_database.dart';
-import 'package:uuid/uuid.dart';
-import 'connection/firebase.dart';
 
 /*var uuid = Uuid().v4();
 CollectionReference ref = FirebaseFirestore.instance.collection('Orders');
@@ -244,7 +243,7 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: _buildOrderButton(_controller, _controller1, _controller2,
-                  context, context, _selectedloc),
+                  context, context, _location),
             );
           default:
             if (model.productsInCart.length > productIndex) {
@@ -328,7 +327,7 @@ Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
     child: CupertinoButton(
       color: Colors.black,
       child: Text('Order'),
-      onPressed: () {
+      onPressed: () async {
         if (name.text.isEmpty || email.text.isEmpty || phoneno.text.isEmpty) {
           showCupertinoDialog(
               context: context,
@@ -347,7 +346,7 @@ Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
                 );
               });
         } else {
-          showCupertinoDialog(
+          /*showCupertinoDialog(
               context: context1,
               builder: (context1) {
                 return CupertinoAlertDialog(
@@ -362,8 +361,9 @@ Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
                     )
                   ],
                 );
-              });
+              });*/
           addOrder(name.text, email.text, phoneno.text, Loc.toString());
+          await makePayment();
         }
 
         // Validation passed
@@ -450,5 +450,63 @@ class ShoppingCartItem extends StatelessWidget {
     );
 
     return row;
+  }
+}
+
+Future<void> makePayment() async {
+  Map<String, dynamic>? paymentIntent;
+  try {
+    paymentIntent = await createPaymentIntent('10000', 'GBP');
+
+    var gpay = PaymentSheetGooglePay(
+        merchantCountryCode: "GB", currencyCode: "GBP", testEnv: true);
+
+    //STEP 2: Initialize Payment Sheet
+    await Stripe.instance
+        .initPaymentSheet(
+            paymentSheetParameters: SetupPaymentSheetParameters(
+                paymentIntentClientSecret: paymentIntent![
+                    'client_secret'], //Gotten from payment intent
+                style: ThemeMode.light,
+                merchantDisplayName: 'Abhi',
+                googlePay: gpay))
+        .then((value) {});
+
+    //STEP 3: Display Payment sheet
+    displayPaymentSheet();
+  } catch (err) {
+    print(err);
+  }
+}
+
+displayPaymentSheet() async {
+  try {
+    await Stripe.instance.presentPaymentSheet().then((value) {
+      print("Payment Successfully");
+    });
+  } catch (e) {
+    print('$e');
+  }
+}
+
+createPaymentIntent(String amount, String currency) async {
+  try {
+    Map<String, dynamic> body = {
+      'amount': amount,
+      'currency': currency,
+    };
+
+    var response = await http.post(
+      Uri.parse('https://api.stripe.com/v1/payment_intents'),
+      headers: {
+        'Authorization':
+            'Bearer sk_test_51MWx8OAVMyklfe3C3gP4wKOhTsRdF6r1PYhhg1PqupXDITMrV3asj5Mmf0G5F9moPL6zNfG3juK8KHgV9XNzFPlq00wmjWwZYA',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body,
+    );
+    return json.decode(response.body);
+  } catch (err) {
+    throw Exception(err.toString());
   }
 }

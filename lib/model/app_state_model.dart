@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' as foundation;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cupertino_store/shopping_cart_tab.dart';
 import 'product.dart';
 import 'products_repository.dart';
 
@@ -11,7 +8,7 @@ double _shippingCostPerItem = 7;
 class AppStateModel extends foundation.ChangeNotifier {
   // All the available products.
   List<Product> _availableProducts = [];
-  var total = 10;
+  var total = 0;
   // The currently selected category of products.
   Category _selectedCategory = Category.all;
 
@@ -88,8 +85,6 @@ class AppStateModel extends foundation.ChangeNotifier {
       // print(total);
     } else {
       _productsInCart[productId] = _productsInCart[productId]! + 1;
-      total += 1;
-      print("adding 2");
     }
 
     notifyListeners();
@@ -100,6 +95,9 @@ class AppStateModel extends foundation.ChangeNotifier {
     if (_productsInCart.containsKey(productId)) {
       if (_productsInCart[productId] == 1) {
         _productsInCart.remove(productId);
+        if (total > 0) {
+          total -= 1;
+        }
       } else {
         _productsInCart[productId] = _productsInCart[productId]! - 1;
       }

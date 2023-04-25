@@ -46,6 +46,10 @@ dependencies:
   mailer: ^6.0.0
   http: ^0.13.5
   badges: ^3.0.3
+  flutter_stripe: ^9.1.1
+  get: ^4.6.5
+  google: ^0.0.1
+  pay: ^1.1.0
 
 dev_dependencies:
   flutter_test:
