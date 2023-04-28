@@ -359,23 +359,8 @@ Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
                 );
               });
               */
-          await makePayment();
-          showCupertinoDialog(
-              context: context1,
-              builder: (context1) {
-                return CupertinoAlertDialog(
-                  title: Text('Congrats'),
-                  content: Text('Payment successfull'),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      child: Text('Return'),
-                      onPressed: () {
-                        Navigator.pop(context1);
-                      },
-                    )
-                  ],
-                );
-              });
+          await makePayment(context1);
+
           addOrder(name.text, email.text, phoneno.text, Loc.toString());
         }
 
@@ -466,7 +451,7 @@ class ShoppingCartItem extends StatelessWidget {
   }
 }
 
-Future<void> makePayment() async {
+Future<void> makePayment(context1) async {
   Map<String, dynamic>? paymentIntent;
   try {
     paymentIntent = await createPaymentIntent('10000', 'GBP');
@@ -486,7 +471,24 @@ Future<void> makePayment() async {
         .then((value) {});
 
     //STEP 3: Display Payment sheet
-    displayPaymentSheet();
+    displayPaymentSheet().then(() {
+      showCupertinoDialog(
+          context: context1,
+          builder: (context1) {
+            return CupertinoAlertDialog(
+              title: Text('Congrats'),
+              content: Text('Payment successfull'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('Return'),
+                  onPressed: () {
+                    Navigator.pop(context1);
+                  },
+                )
+              ],
+            );
+          });
+    });
   } catch (err) {
     print('Hello error');
     print(err);

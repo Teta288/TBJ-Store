@@ -66,8 +66,6 @@ class CupertinoStoreHomePage extends StatelessWidget {
             ),
             label: 'Cart',
           ),
-          BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.money_dollar), label: 'Pay'),
         ],
       ),
       tabBuilder: (context, index) {
@@ -94,14 +92,6 @@ class CupertinoStoreHomePage extends StatelessWidget {
               );
             });
             break;
-          case 3:
-            returnValue = CupertinoTabView(
-              builder: (context) {
-                return const CupertinoPageScaffold(
-                  child: Checkout_tab(),
-                );
-              },
-            );
         }
         return returnValue;
       },
