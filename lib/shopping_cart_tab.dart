@@ -280,10 +280,6 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
                           'Total ${_currencyFormat.format(model.totalCost)}',
                           style: Styles.productRowTotal,
                         ),
-                        Text(
-                          'My Total ${model.total}',
-                          style: Styles.productRowTotal,
-                        ),
                         const SizedBox(
                           height: 3,
                         ),
@@ -361,9 +357,26 @@ Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
                     )
                   ],
                 );
-              });*/
-          addOrder(name.text, email.text, phoneno.text, Loc.toString());
+              });
+              */
           await makePayment();
+          showCupertinoDialog(
+              context: context1,
+              builder: (context1) {
+                return CupertinoAlertDialog(
+                  title: Text('Congrats'),
+                  content: Text('Payment successfull'),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text('Return'),
+                      onPressed: () {
+                        Navigator.pop(context1);
+                      },
+                    )
+                  ],
+                );
+              });
+          addOrder(name.text, email.text, phoneno.text, Loc.toString());
         }
 
         // Validation passed
@@ -475,6 +488,7 @@ Future<void> makePayment() async {
     //STEP 3: Display Payment sheet
     displayPaymentSheet();
   } catch (err) {
+    print('Hello error');
     print(err);
   }
 }
@@ -500,7 +514,7 @@ createPaymentIntent(String amount, String currency) async {
       Uri.parse('https://api.stripe.com/v1/payment_intents'),
       headers: {
         'Authorization':
-            'Bearer sk_test_51MWx8OAVMyklfe3C3gP4wKOhTsRdF6r1PYhhg1PqupXDITMrV3asj5Mmf0G5F9moPL6zNfG3juK8KHgV9XNzFPlq00wmjWwZYA',
+            'Bearer sk_test_51MyEmZFQsYZxmyn48jbgvGxmGDlzhGDurxTSrdf3cOUIeprHPq5m1edcTHB1C2l5rqV50ngM0Y34R2o7sN41Irdx00SDoaz980',
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: body,

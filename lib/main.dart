@@ -10,8 +10,11 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //Stripe.publishableKey =
-  "pk_test_51MyEmZFQsYZxmyn4vVYsmru65aMsJWu9BPd53ebHgsPyCqmJqdp14ztkCS2haz0t7Xl3J1XSumfN8KeAuSbZXsYg00wA2lSXrn";
+  Stripe.publishableKey =
+      "pk_test_51MyEmZFQsYZxmyn4vVYsmru65aMsJWu9BPd53ebHgsPyCqmJqdp14ztkCS2haz0t7Xl3J1XSumfN8KeAuSbZXsYg00wA2lSXrn";
+  Stripe.merchantIdentifier = 'any string works';
+  await Stripe.instance.applySettings();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

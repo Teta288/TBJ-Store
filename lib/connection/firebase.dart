@@ -1,11 +1,7 @@
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cupertino_store/shopping_cart_tab.dart';
 import 'package:uuid/uuid.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> addOrder(name, email, phoneno, Loc) async {
