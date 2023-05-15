@@ -27,7 +27,7 @@ class SearchBar extends StatelessWidget {
           children: [
             const Icon(
               CupertinoIcons.search,
-              color: Color.fromARGB(1, 18, 85, 193),
+              color: Color.fromARGB(1, 16, 23, 32),
             ),
             Expanded(
               child: CupertinoTextField(

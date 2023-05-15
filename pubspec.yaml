@@ -49,6 +49,7 @@ dependencies:
   get: ^4.6.5
   google: ^0.0.1
   cloud_firestore: ^4.5.3
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:

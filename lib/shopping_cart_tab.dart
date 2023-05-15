@@ -108,7 +108,7 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
             controller: _controller1,
             // onFieldSubmitted: _handleSubmitted,
-            textCapitalization: TextCapitalization.words,
+
             decoration: BoxDecoration(
               border: Border(
                 bottom:
@@ -219,21 +219,6 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
       (context, index) {
         final productIndex = index - 2;
         switch (index) {
-          /*  case 0:
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _buildNameField(),
-            );
-          case 1:
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _buildEmailField(),
-            );
-          case 2:
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _buildLocationField(),
-            );*/
           case 0:
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 48),
@@ -241,10 +226,15 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
             );
           case 1:
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: _buildOrderButton(_controller, _controller1, _controller2,
-                  context, context, _location),
-            );
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: _buildOrderButton(
+                    _controller,
+                    _controller1,
+                    _controller2,
+                    context,
+                    context,
+                    _location[_selectedloc],
+                    model.totalCartQuantity));
           default:
             if (model.productsInCart.length > productIndex) {
               return ShoppingCartItem(
@@ -318,7 +308,8 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   }
 }
 
-Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
+Widget _buildOrderButton(
+    name, email, phoneno, context, context1, Loc, Cartproducts) {
   return Container(
     child: CupertinoButton(
       color: Colors.black,
@@ -342,26 +333,9 @@ Widget _buildOrderButton(name, email, phoneno, context, context1, Loc) {
                 );
               });
         } else {
-          /*showCupertinoDialog(
-              context: context1,
-              builder: (context1) {
-                return CupertinoAlertDialog(
-                  title: Text('Congrats'),
-                  content: Text('Thank you for shopping'),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      child: Text('Return'),
-                      onPressed: () {
-                        Navigator.pop(context1);
-                      },
-                    )
-                  ],
-                );
-              });
-              */
+          addOrder(name.text, email.text, phoneno.text, Loc.toString(),
+              Cartproducts.toString());
           await makePayment(context1);
-
-          addOrder(name.text, email.text, phoneno.text, Loc.toString());
         }
 
         // Validation passed
@@ -453,6 +427,7 @@ class ShoppingCartItem extends StatelessWidget {
 
 Future<void> makePayment(context1) async {
   Map<String, dynamic>? paymentIntent;
+  //final model = Provider.of<AppStateModel>(context1);
   try {
     paymentIntent = await createPaymentIntent('10000', 'GBP');
 
@@ -466,29 +441,12 @@ Future<void> makePayment(context1) async {
                 paymentIntentClientSecret: paymentIntent![
                     'client_secret'], //Gotten from payment intent
                 style: ThemeMode.light,
-                merchantDisplayName: 'Abhi',
+                merchantDisplayName: 'Teta',
                 googlePay: gpay))
         .then((value) {});
 
     //STEP 3: Display Payment sheet
-    displayPaymentSheet().then(() {
-      showCupertinoDialog(
-          context: context1,
-          builder: (context1) {
-            return CupertinoAlertDialog(
-              title: Text('Congrats'),
-              content: Text('Payment successfull'),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: Text('Return'),
-                  onPressed: () {
-                    Navigator.pop(context1);
-                  },
-                )
-              ],
-            );
-          });
-    });
+    displayPaymentSheet();
   } catch (err) {
     print('Hello error');
     print(err);

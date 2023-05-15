@@ -6,7 +6,6 @@ import 'search_tab.dart';
 import 'shopping_cart_tab.dart';
 import 'model/app_state_model.dart';
 import 'package:provider/provider.dart';
-import 'Checkout.dart';
 
 /*int _counter = 0;
 @override
