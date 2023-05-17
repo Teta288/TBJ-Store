@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'product_row_item.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -234,7 +235,7 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
                     context,
                     context,
                     _location[_selectedloc],
-                    model.totalCartQuantity));
+                    model.productsInCart));
           default:
             if (model.productsInCart.length > productIndex) {
               return ShoppingCartItem(
@@ -333,6 +334,7 @@ Widget _buildOrderButton(
                 );
               });
         } else {
+          print('Hello products${Cartproducts}');
           addOrder(name.text, email.text, phoneno.text, Loc.toString(),
               Cartproducts.toString());
           await makePayment(context1);
@@ -427,7 +429,8 @@ class ShoppingCartItem extends StatelessWidget {
 
 Future<void> makePayment(context1) async {
   Map<String, dynamic>? paymentIntent;
-  //final model = Provider.of<AppStateModel>(context1);
+  //final model = Provider.of<AppStateModel>(context1, listen: false);
+  //final _currencyFormat = NumberFormat.currency(symbol: '\$');
   try {
     paymentIntent = await createPaymentIntent('10000', 'GBP');
 
@@ -456,7 +459,7 @@ Future<void> makePayment(context1) async {
 displayPaymentSheet() async {
   try {
     await Stripe.instance.presentPaymentSheet().then((value) {
-      print("Payment Successfully");
+      print("Payment Successfull");
     });
   } catch (e) {
     print('$e');
@@ -465,10 +468,7 @@ displayPaymentSheet() async {
 
 createPaymentIntent(String amount, String currency) async {
   try {
-    Map<String, dynamic> body = {
-      'amount': amount,
-      'currency': currency,
-    };
+    Map<String, dynamic> body = {'amount': amount, 'currency': currency};
 
     var response = await http.post(
       Uri.parse('https://api.stripe.com/v1/payment_intents'),
