@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart' as foundation;
 import 'product.dart';
 import 'products_repository.dart';
@@ -8,6 +10,7 @@ double _shippingCostPerItem = 7;
 class AppStateModel extends foundation.ChangeNotifier {
   // All the available products.
   List<Product> _availableProducts = [];
+  List<Map<String, dynamic>> _orderProducts = [];
   var total = 0;
   // The currently selected category of products.
   Category _selectedCategory = Category.all;
@@ -17,6 +20,10 @@ class AppStateModel extends foundation.ChangeNotifier {
 
   Map<int, int> get productsInCart {
     return Map.from(_productsInCart);
+  }
+
+  List<Map<String, dynamic>> get ordersInCart {
+    return _orderProducts;
   }
 
   // Total number of items in the cart.
@@ -77,11 +84,12 @@ class AppStateModel extends foundation.ChangeNotifier {
   }
 
   // Adds a product to the cart.
-  void addProductToCart(int productId) {
+  void addProductToCart(int productId, String productName) {
     if (!_productsInCart.containsKey(productId)) {
       _productsInCart[productId] = 1;
+      _orderProducts.add({"id": productId, "name": productName});
       total += 1;
-      print("adding 1");
+      //  print("Adding produ ${jsonEncode(_productsInCart[0])}");
       // print(total);
     } else {
       _productsInCart[productId] = _productsInCart[productId]! + 1;
@@ -95,6 +103,7 @@ class AppStateModel extends foundation.ChangeNotifier {
     if (_productsInCart.containsKey(productId)) {
       if (_productsInCart[productId] == 1) {
         _productsInCart.remove(productId);
+        _orderProducts.removeWhere((element) => element['id'] == productId);
         if (total > 0) {
           total -= 1;
         }

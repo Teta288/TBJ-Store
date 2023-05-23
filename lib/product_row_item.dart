@@ -63,7 +63,7 @@ class ProductRowItem extends StatelessWidget {
             onPressed: () {
               final model = Provider.of<AppStateModel>(context, listen: false);
               print(model.total);
-              model.addProductToCart(product.id);
+              model.addProductToCart(product.id, product.name);
             },
             child: const Icon(
               CupertinoIcons.plus_circled,

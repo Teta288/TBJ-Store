@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'product_row_item.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -235,7 +233,8 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
                     context,
                     context,
                     _location[_selectedloc],
-                    model.productsInCart));
+                    model.productsInCart,
+                    model.ordersInCart));
           default:
             if (model.productsInCart.length > productIndex) {
               return ShoppingCartItem(
@@ -310,7 +309,7 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
 }
 
 Widget _buildOrderButton(
-    name, email, phoneno, context, context1, Loc, Cartproducts) {
+    name, email, phoneno, context, context1, Loc, Cartproducts, ordersInCart) {
   return Container(
     child: CupertinoButton(
       color: Colors.black,
@@ -334,9 +333,13 @@ Widget _buildOrderButton(
                 );
               });
         } else {
-          print('Hello products${Cartproducts}');
+          //  for (var element in ordersInCart) {
+          //     print('Orders in Cart ${element["name"]}');
+          //     print("Orders length ${ordersInCart.length}");
+          //   }
+          //print('Hello products ${Cartproducts}');
           addOrder(name.text, email.text, phoneno.text, Loc.toString(),
-              Cartproducts.toString());
+              ordersInCart);
           await makePayment(context1);
         }
 
